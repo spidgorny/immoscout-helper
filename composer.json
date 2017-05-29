@@ -1,0 +1,33 @@
+{
+    "name": "spidgorny/immoscout",
+	"minimum-stability": "dev",
+    "type": "project",
+    "require": {
+		"phpquery/phpquery": "*",
+        "slim/slim": "^3.0",
+        "guzzlehttp/guzzle": "^6.2@dev",
+        "danielstjules/stringy": "dev-master"
+	},
+	"autoload": {
+		"psr-4": {
+			"ImmoScout\\": "src"
+		},
+		"files": [
+			"vendor/phpquery/phpquery/phpQuery/phpQuery.php"
+		]
+	},
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "phpquery/phpquery",
+				"version": "master",
+				"source": {
+					"url": "https://github.com/phpquery/phpquery",
+					"type": "git",
+					"reference": "master"
+				}
+			}
+		}
+	]
+}

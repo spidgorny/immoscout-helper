@@ -16,7 +16,8 @@ $app->get('/', function (Request $request, Response $response) {
 });
 $app->get('/hello/{name}', function (Request $request, Response $response) {
 	$name = $request->getAttribute('name');
-	$response->getBody()->write("Hello, $name");
+	$response->getBody()->write("Hello, $name".BR);
+	$response->getBody()->write('<pre>'.print_r($_SERVER, true).'</pre>');
 
 	return $response;
 });
@@ -25,8 +26,8 @@ $app->get('/parse1/{url}', function (Request $request, Response $response) {
 	$url = urldecode($url);
 	$p = new \ImmoScout\Parser1($url);
 	$content = $p->render();
-	$response->getBody()->write($content);
-
+	//$response->getBody()->write($content);
+	$response = $response->withJson($content);
 	return $response;
 });
 $app->run();

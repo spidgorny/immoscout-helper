@@ -1,0 +1,29 @@
+{
+	"manifest_version": 2,
+
+	"name": "IS24 helper",
+ 	"description": "This extension adds additional calculated values to IS24 result page",
+	"version": "1.0",
+
+	"browser_action": {
+		"default_icon": "icon.png"
+	},
+	"permissions": [
+		"activeTab",
+		"tabs",
+		"https://www.immobilienscout24.de/*",
+		"http://localhost/*",
+		"http://localhost:8080/*",
+		"http://localhost:8081/*"
+	],
+	"content_scripts": [
+		{
+			"matches": ["https://www.immobilienscout24.de/*"],
+			"js": ["is24.js"]
+		}
+	],
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": true
+	}
+}

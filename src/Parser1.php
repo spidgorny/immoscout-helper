@@ -63,7 +63,9 @@ class Parser1 {
 		$content['provision'] = $provision;
 
 //		return implode(PHP_EOL, $content);
-		return json_encode($content, JSON_PRETTY_PRINT);
+//		header('Content-Type: application/json');
+//		return json_encode($content, JSON_PRETTY_PRINT);
+		return $content;
 	}
 
 	function fetchData() {

@@ -1,18 +1,50 @@
-class IS24 {
+const simpleParseNumber = require("simple-parse-number");
 
-	constructor() {
-		let loc = document.location;
-		let url = loc.protocol + '//' + loc.host + loc.pathname;
-		console.log(loc);
-		chrome.runtime.sendMessage({url: url}, this.injectJSON.bind(this));
+export class IS24 {
+
+	document: Document;
+
+	loc: Location;
+
+	area: number;
+
+	price: number;
+
+	price_per_m2: number;
+
+	constructor(document) {
+		this.document = document;
+		this.loc = this.document.location;
+		//console.log(this.loc);
+		let url = this.loc.protocol + '//' + this.loc.host + this.loc.pathname;
+		//chrome.runtime.sendMessage({url: url}, this.injectJSON.bind(this));
+
+		this.area = parseFloat(
+			document.querySelector('dd.is24qa-wohnflaeche-ca').innerHTML);
+		this.price = this.parseNumber(
+			document.querySelector('dd.is24qa-kaufpreis').innerHTML);
+		if (this.area) {
+			this.price_per_m2 = Math.round(this.price / this.area);
+		}
+
+		this.injectJSON({
+			'Area': this.area,
+			'Price': this.price,
+			'Price / m^2': this.price_per_m2,
+		});
+	}
+
+	parseNumber(a) {
+		return simpleParseNumber(a, { decimal: ',', grouping: '.' });
 	}
 
 	injectJSON(response) {
-		console.log(response);
-		console.log(window);
+		// console.log(response);
+		// console.log(window);
 		let parent: HTMLDivElement
-			= <HTMLDivElement> document.querySelector(
+			= <HTMLDivElement> this.document.querySelector(
 				'div.criteriagroup.print-two-columns');
+		let originalFirstChild = parent.firstChild;
 		for (let key in response) {
 			let val = response[key];
 
@@ -23,15 +55,15 @@ class IS24 {
 				${val}
 				</dd></dl>`;
 
-			let temp = document.createElement('div');
+			let temp = this.document.createElement('div');
 			temp.innerHTML = html;
 			let htmlObject = temp.firstChild;
-			console.log(htmlObject);
+			//console.log(htmlObject);
 
-			parent.prepend(htmlObject);
+			//parent.prepend(htmlObject);
+			parent.insertBefore(htmlObject, originalFirstChild);
 		}
 	}
 
 }
 
-new IS24();

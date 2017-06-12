@@ -1,0 +1,29 @@
+{
+	"name": "immoscout",
+	"version": "1.0.0",
+	"description": "Add additional derived information to immoscout24 listings",
+	"main": "index.js",
+	"directories": {
+		"test": "tests"
+	},
+	"dependencies": {
+		"jsdom": "^11.0.0",
+		"simple-parse-number": "^0.1.1",
+		"tape": "^4.6.3"
+	},
+	"devDependencies": {},
+	"scripts": {
+		"compile": "webpack extension/content_is24.js extension/content_run.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/spidgorny/immoscout-helper.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/spidgorny/immoscout-helper/issues"
+	},
+	"homepage": "https://github.com/spidgorny/immoscout-helper#readme"
+}

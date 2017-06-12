@@ -19,10 +19,10 @@
 	"content_scripts": [
 		{
 			"matches": ["https://www.immobilienscout24.de/*"],
-			"js": ["is24.js"]
+			"js": ["content_run.js"]
 		}
 	],
-	"background": {
+	"~background": {
 		"scripts": ["background.js"],
 		"persistent": true
 	}

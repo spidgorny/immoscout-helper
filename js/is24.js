@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var simpleParseNumber = require("simple-parse-number");
+var moment = require('moment');
 var IS24 = (function () {
     function IS24(document) {
         this.document = document;
@@ -9,14 +10,28 @@ var IS24 = (function () {
         var url = this.loc.protocol + '//' + this.loc.host + this.loc.pathname;
         //chrome.runtime.sendMessage({url: url}, this.injectJSON.bind(this));
         this.area = parseFloat(document.querySelector('dd.is24qa-wohnflaeche-ca').innerHTML);
-        this.price = this.parseNumber(document.querySelector('dd.is24qa-kaufpreis').innerHTML);
+        var kaufpreis = document.querySelector('dd.is24qa-kaufpreis');
+        if (kaufpreis) {
+            this.price = this.parseNumber(kaufpreis.innerHTML);
+        }
+        var kaltmiete = document.querySelector('dd.is24qa-kaltmiete');
+        if (!this.price && kaltmiete) {
+            this.price = this.parseNumber(kaltmiete.innerHTML);
+        }
         if (this.area) {
             this.price_per_m2 = Math.round(this.price / this.area);
         }
+        this.built = parseInt(document.querySelector('dd.is24qa-baujahr').innerHTML);
+        if (this.built) {
+            var startDate = new Date(this.built, 1, 1);
+            var endDate = new Date();
+            this.age = moment.duration(endDate.getTime() - startDate.getTime()).years();
+        }
         this.injectJSON({
-            'Area': this.area,
-            'Price': this.price,
-            'Price / m^2': this.price_per_m2,
+            'Area': this.area + ' m<sup>2</sup>',
+            'Price': this.price + ' &euro;',
+            'Price / m^2': this.price_per_m2 + ' &euro;',
+            'Age': this.age + ' years',
         });
     }
     IS24.prototype.parseNumber = function (a) {

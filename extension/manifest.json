@@ -21,9 +21,5 @@
 			"matches": ["https://www.immobilienscout24.de/*"],
 			"js": ["content_run.js"]
 		}
-	],
-	"~background": {
-		"scripts": ["background.js"],
-		"persistent": true
-	}
+	]
 }

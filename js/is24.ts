@@ -29,9 +29,15 @@ export class IS24 {
 		}
 	}
 
+	log(code: string, value: any) {
+		console.log(code, value);
+	}
+
 	render() {
 		this.area = parseFloat(
 			document.querySelector('dd.is24qa-wohnflaeche-ca').innerHTML);
+		this.log('area', this.area);
+
 		let kaufpreis = document.querySelector('dd.is24qa-kaufpreis');
 		if (kaufpreis) {
 			this.price = this.parseNumber(kaufpreis.innerHTML);
@@ -40,27 +46,39 @@ export class IS24 {
 		if (!this.price && kaltmiete) {
 			this.price = this.parseNumber(kaltmiete.innerHTML);
 		}
+		this.log('price', this.price);
+
 		if (this.area) {
-			this.price_per_m2 = Math.round(this.price / this.area);
+			this.price_per_m2 = (this.price / this.area).toFixed(2);
 		}
-		this.built = parseInt(
-			document.querySelector('dd.is24qa-baujahr').innerHTML);
-		if (this.built) {
-			const startDate = new Date(this.built, 1, 1);
-			let endDate = new Date();
-			this.age = moment.duration(endDate.getTime() - startDate.getTime()).years();
+		this.log('ppm', this.price_per_m2);
+
+		let baujahr = document.querySelector('dd.is24qa-baujahr');
+		if (baujahr) {
+			this.built = parseInt(baujahr.innerHTML);
+			this.log('built', this.built);
+
+			if (this.built) {
+				const startDate = new Date(this.built, 1, 1);
+				let endDate = new Date();
+				this.age = moment.duration(endDate.getTime() - startDate.getTime()).years();
+				this.log('age', this.age);
+			}
 		}
 
-		this.injectJSON({
-			'Area': this.area + ' m<sup>2</sup>',
-			'Price': this.price + ' &euro;',
+		const set = {
+			// 'Area': this.area + ' m<sup>2</sup>',
+			// 'Price': this.price + ' &euro;',
 			'Price / m^2': this.price_per_m2 + ' &euro;',
-			'Age': this.age + ' years',
-		});
+		};
+		if (this.age) {
+			set['Age'] = this.age + ' years';
+		}
+		this.injectJSON(set);
 	}
 
 	parseNumber(a) {
-		return simpleParseNumber(a, { decimal: ',', grouping: '.' });
+		return simpleParseNumber(a, {decimal: ',', grouping: '.'});
 	}
 
 	injectJSON(response) {
@@ -68,26 +86,33 @@ export class IS24 {
 		// console.log(window);
 		let parent: HTMLDivElement
 			= <HTMLDivElement> this.document.querySelector(
-				'div.criteriagroup.print-two-columns');
+			'div.criteriagroup.main-criteria-container');
+		this.log('parent', parent);
 		if (parent) {
-			let originalFirstChild = parent.firstChild;
+			let originalOnlyDivs = Array.from(parent.childNodes)
+				.filter(node => node.nodeType == Node.ELEMENT_NODE);
+			let originalFirstChild = originalOnlyDivs[originalOnlyDivs.length-1];
+			this.log('originalFirstChild', originalFirstChild);
 			for (let key in response) {
 				let val = response[key];
 
-				let html = `<dl class="grid">
-					<dt class="is24qa-haustyp-label grid-item two-fifths">
-					${key}
-					</dt><dd class="is24qa-haustyp grid-item three-fifths">
-					${val}
-					</dd></dl>`;
+				// should not have EOL because firstChild below
+				let html = `<div class="mainCriteria flex-item margin-vertical-xs"> 
+	<div class="is24qa-ppm is24-value font-semibold"> ${val} </div>
+	<div class="is24qa-ppm-label is24-label font-s"> ${key} </div> </div>`;
 
 				let temp = this.document.createElement('div');
 				temp.innerHTML = html;
-				let htmlObject = temp.firstChild;
-				//console.log(htmlObject);
+				let onlyDivs = Array.from(temp.childNodes)
+					.filter(node => {
+					return node.nodeType == Node.ELEMENT_NODE;
+				});
+
+				let htmlObject = onlyDivs[onlyDivs.length-1];
+				this.log('htmlObject', htmlObject);
 
 				//parent.prepend(htmlObject);
-				parent.insertBefore(htmlObject, originalFirstChild);
+				parent.insertBefore(htmlObject, null);
 			}
 		}
 	}

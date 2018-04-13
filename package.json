@@ -15,7 +15,7 @@
 	"devDependencies": {},
 	"scripts": {
 		"compile":  "webpack js/content_is24.js extension/content_run.js",
-		"pack": "c:\\progra~1\\winrar\\winrar a immoscount-helper.zip extension\\",
+		"pack": "c:\\progra~1\\winrar\\winrar a build/immoscout-helper.zip extension\\",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {

@@ -1,4 +1,4 @@
-var Background = (function () {
+var Background = /** @class */ (function () {
     function Background() {
         chrome.runtime.onMessage.addListener(this.startEvent.bind(this));
     }

@@ -2,13 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var simpleParseNumber = require("simple-parse-number");
 var moment = require('moment');
-var IS24 = (function () {
+var IS24 = /** @class */ (function () {
     function IS24(document) {
         this.document = document;
         this.loc = this.document.location;
         //console.log(this.loc);
         var url = this.loc.protocol + '//' + this.loc.host + this.loc.pathname;
         //chrome.runtime.sendMessage({url: url}, this.injectJSON.bind(this));
+        if (document.querySelector('div.is24-ex-details')) {
+            this.render();
+        }
+    }
+    IS24.prototype.render = function () {
         this.area = parseFloat(document.querySelector('dd.is24qa-wohnflaeche-ca').innerHTML);
         var kaufpreis = document.querySelector('dd.is24qa-kaufpreis');
         if (kaufpreis) {
@@ -33,7 +38,7 @@ var IS24 = (function () {
             'Price / m^2': this.price_per_m2 + ' &euro;',
             'Age': this.age + ' years',
         });
-    }
+    };
     IS24.prototype.parseNumber = function (a) {
         return simpleParseNumber(a, { decimal: ',', grouping: '.' });
     };
@@ -41,16 +46,18 @@ var IS24 = (function () {
         // console.log(response);
         // console.log(window);
         var parent = this.document.querySelector('div.criteriagroup.print-two-columns');
-        var originalFirstChild = parent.firstChild;
-        for (var key in response) {
-            var val = response[key];
-            var html = "<dl class=\"grid\">\n\t\t\t\t<dt class=\"is24qa-haustyp-label grid-item two-fifths\">\n\t\t\t\t" + key + "\n\t\t\t\t</dt><dd class=\"is24qa-haustyp grid-item three-fifths\">\n\t\t\t\t" + val + "\n\t\t\t\t</dd></dl>";
-            var temp = this.document.createElement('div');
-            temp.innerHTML = html;
-            var htmlObject = temp.firstChild;
-            //console.log(htmlObject);
-            //parent.prepend(htmlObject);
-            parent.insertBefore(htmlObject, originalFirstChild);
+        if (parent) {
+            var originalFirstChild = parent.firstChild;
+            for (var key in response) {
+                var val = response[key];
+                var html = "<dl class=\"grid\">\n\t\t\t\t\t<dt class=\"is24qa-haustyp-label grid-item two-fifths\">\n\t\t\t\t\t" + key + "\n\t\t\t\t\t</dt><dd class=\"is24qa-haustyp grid-item three-fifths\">\n\t\t\t\t\t" + val + "\n\t\t\t\t\t</dd></dl>";
+                var temp = this.document.createElement('div');
+                temp.innerHTML = html;
+                var htmlObject = temp.firstChild;
+                //console.log(htmlObject);
+                //parent.prepend(htmlObject);
+                parent.insertBefore(htmlObject, originalFirstChild);
+            }
         }
     };
     return IS24;

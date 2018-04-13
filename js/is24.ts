@@ -24,6 +24,12 @@ export class IS24 {
 		let url = this.loc.protocol + '//' + this.loc.host + this.loc.pathname;
 		//chrome.runtime.sendMessage({url: url}, this.injectJSON.bind(this));
 
+		if (document.querySelector('div.is24-ex-details')) {
+			this.render();
+		}
+	}
+
+	render() {
 		this.area = parseFloat(
 			document.querySelector('dd.is24qa-wohnflaeche-ca').innerHTML);
 		let kaufpreis = document.querySelector('dd.is24qa-kaufpreis');
@@ -63,24 +69,26 @@ export class IS24 {
 		let parent: HTMLDivElement
 			= <HTMLDivElement> this.document.querySelector(
 				'div.criteriagroup.print-two-columns');
-		let originalFirstChild = parent.firstChild;
-		for (let key in response) {
-			let val = response[key];
+		if (parent) {
+			let originalFirstChild = parent.firstChild;
+			for (let key in response) {
+				let val = response[key];
 
-			let html = `<dl class="grid">
-				<dt class="is24qa-haustyp-label grid-item two-fifths">
-				${key}
-				</dt><dd class="is24qa-haustyp grid-item three-fifths">
-				${val}
-				</dd></dl>`;
+				let html = `<dl class="grid">
+					<dt class="is24qa-haustyp-label grid-item two-fifths">
+					${key}
+					</dt><dd class="is24qa-haustyp grid-item three-fifths">
+					${val}
+					</dd></dl>`;
 
-			let temp = this.document.createElement('div');
-			temp.innerHTML = html;
-			let htmlObject = temp.firstChild;
-			//console.log(htmlObject);
+				let temp = this.document.createElement('div');
+				temp.innerHTML = html;
+				let htmlObject = temp.firstChild;
+				//console.log(htmlObject);
 
-			//parent.prepend(htmlObject);
-			parent.insertBefore(htmlObject, originalFirstChild);
+				//parent.prepend(htmlObject);
+				parent.insertBefore(htmlObject, originalFirstChild);
+			}
 		}
 	}
 
